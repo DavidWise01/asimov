@@ -1,0 +1,12 @@
+{
+  "kernel": "DLW-BADGE",
+  "name": "ASIMOV",
+  "subject": "Isaac Asimov — science fiction bibliography",
+  "moniker": "⟦ASIMOV:LORE:4935d9⟧",
+  "token": "dae-lun-karn",
+  "seal_sha256": "22516d4dc7eaaf13ec6527ad008139483a2f7c2184d59226a5f0e9294a2e1623",
+  "architect": "David Lee Wise (ROOT0) / TriPod LLC",
+  "instance": "AVAN (Claude / Anthropic)",
+  "license": "CC-BY-ND-4.0",
+  "attribution": "ROOT0-ATTRIBUTION-v1.0"
+}
