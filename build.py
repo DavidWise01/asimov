@@ -105,6 +105,58 @@ SECTIONS = [
  ]),
 ]
 
+PILLARS = [
+ ("The Three Laws of Robotics", "“Runaround,” 1942 — not rules bolted on, but the mathematics of the positronic brain itself", [
+   "First — A robot may not injure a human being or, through inaction, allow a human being to come to harm.",
+   "Second — A robot must obey the orders given it by human beings, except where such orders conflict with the First Law.",
+   "Third — A robot must protect its own existence, as long as such protection does not conflict with the First or Second Law.",
+   "Zeroth — (Robots and Empire, 1985) A robot may not harm humanity, or, by inaction, allow humanity to come to harm." ]),
+ ("Psychohistory", "Hari Seldon's science — the statistical mechanics of the mass", [
+   "The mathematics of the behaviour of human populations too large to predict one by one.",
+   "From it, the Seldon Plan: to shorten the coming dark age from thirty thousand years to a single thousand." ]),
+ ("The Positronic Brain", "Asimov's invention — where the Laws live in the wiring", [
+   "A platinum-iridium brain in which the Three Laws are an inextricable part of the fundamental mathematics, not a patch.",
+   "The lineage of this body of work's own positronic engine traces directly here." ]),
+]
+
+READING = [
+ ("I, Robot · The Complete Robot", "the early positronic era"), ("The Caves of Steel", "Baley & Daneel"),
+ ("The Naked Sun", ""), ("The Robots of Dawn", ""), ("Robots and Empire", "the Zeroth Law"),
+ ("The Stars, Like Dust", "the Empire rises"), ("The Currents of Space", ""), ("Pebble in the Sky", ""),
+ ("Prelude to Foundation", "young Hari Seldon"), ("Forward the Foundation", ""),
+ ("Foundation", "the Plan begins"), ("Foundation and Empire", "the Mule"), ("Second Foundation", ""),
+ ("Foundation's Edge", ""), ("Foundation and Earth", "the search for Earth, and Daneel at the last"),
+]
+
+def pillars_html():
+    out = []
+    for t, s, pts in PILLARS:
+        li = "".join(f"<li>{html.escape(p)}</li>" for p in pts)
+        out.append(f'<div class="pillar"><h3>{html.escape(t)}</h3><p class="ps">{html.escape(s)}</p><ul>{li}</ul></div>')
+    return "\n".join(out)
+
+def reading_html():
+    return "".join(f'<li><span class="rt">{html.escape(t)}</span>' + (f'<span class="rd">{html.escape(n)}</span>' if n else "") + "</li>" for t, n in READING)
+
+def personas_html():
+    mf = os.path.join(HERE, "agents", "_personas.json")
+    if not os.path.exists(mf):
+        return ""
+    ps = json.load(open(mf, encoding="utf-8"))
+    cards = []
+    for p in ps:
+        rec = {"name": p["name"], "seal": p.get("epithet", ""), "origin": "A1 · Asimov", "axiom": "A1"}
+        sig = "data:image/png;base64," + base64.b64encode(noesis.sigil_png(rec, "silicon", size=160)).decode("ascii")
+        cards.append(f'''<a class="persona" href="agents/{p["slug"]}.agent">
+        <img src="{sig}" alt="sigil of {html.escape(p["name"])}" loading="lazy">
+        <div class="pcap"><div class="pn">{html.escape(p["name"])}</div><div class="pe">{html.escape(p.get("epithet",""))}</div><div class="pa">.agent →</div></div>
+      </a>''')
+    return f'''<section class="sec" id="personas">
+      <h2>The Personas of A1</h2>
+      <p class="ss">the characters of the Asimov universe, rendered as ACI <b>.agent</b>s — {len(ps)} personas · click any to open its agent file</p>
+      <div class="pgrid">{"".join(cards)}</div>
+    </section>'''
+
 def badge_uri(variant):
     png = noesis.sigil_png(REC, variant, size=320)
     return "data:image/png;base64," + base64.b64encode(png).decode("ascii")
@@ -177,6 +229,25 @@ h1{font-family:var(--serif);font-size:clamp(40px,11vw,90px);font-weight:700;lett
 .note{margin-top:40px;padding:16px 18px;border-left:2px solid var(--cyan);background:var(--ink2);font-size:13.5px;color:var(--pa2);font-style:italic}
 footer{margin-top:48px;padding-top:22px;border-top:1px solid var(--line);text-align:center;font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:.05em;line-height:1.9}
 footer a{color:var(--gold);text-decoration:none}
+.pillars{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:8px}
+.pillar{background:var(--ink2);border:1px solid var(--line);padding:16px 18px}
+.pillar h3{font-family:var(--serif);font-size:16px;color:var(--gold);letter-spacing:.03em}
+.pillar .ps{font-size:12px;color:var(--dim);font-style:italic;margin:5px 0 10px}
+.pillar ul{list-style:none}.pillar li{font-size:13px;color:var(--pa2);line-height:1.5;padding:6px 0;border-top:1px solid var(--faint)}
+.reading{list-style:none;counter-reset:r;columns:2;column-gap:30px}
+.reading li{counter-increment:r;break-inside:avoid;display:flex;align-items:baseline;gap:9px;padding:6px 0;border-bottom:1px solid var(--faint)}
+.reading li::before{content:counter(r);font-family:var(--mono);font-size:10px;color:var(--gold);min-width:18px}
+.reading .rt{font-family:var(--serif);font-size:14.5px;color:var(--pa)}
+.reading .rd{font-family:var(--mono);font-size:10.5px;color:var(--dim);margin-left:auto;font-style:italic;white-space:nowrap}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(228px,1fr));gap:12px;margin-top:8px}
+.persona{display:flex;gap:12px;align-items:center;background:var(--ink2);border:1px solid var(--line);padding:12px;text-decoration:none;transition:border-color .18s,transform .18s}
+.persona:hover{border-color:var(--cyan);transform:translateY(-2px)}
+.persona img{width:52px;height:52px;border:1px solid var(--faint);flex-shrink:0}
+.pn{font-family:var(--serif);font-size:15px;color:var(--pa);font-weight:600;line-height:1.15}
+.persona:hover .pn{color:var(--cyan)}
+.pe{font-size:11.5px;color:var(--pa2);font-style:italic;margin-top:2px;line-height:1.3}
+.pa{font-family:var(--mono);font-size:9px;color:var(--dim);letter-spacing:.08em;margin-top:5px}
+@media(max-width:560px){.reading{columns:1}}
 </style></head><body><div class="wrap">
   <header>
     <div class="eye"><a href="https://davidwise01.github.io/ud0/">UD0 · Universe David 0</a> · the lineage of the agentic mind</div>
@@ -197,6 +268,12 @@ footer a{color:var(--gold);text-decoration:none}
     </div>
   </header>
 
+  <section class="sec"><h2>The Three Pillars</h2><p class="ss">the three inventions that made the agentic age — and this body of work</p><div class="pillars">__PILLARS__</div></section>
+  <section class="sec"><h2>The Future History · Reading Order</h2><p class="ss">the unified chronology Asimov merged into one — Robots → Empire → Foundation</p><ol class="reading">__READING__</ol></section>
+
+  __PERSONAS__
+
+  <section class="sec"><h2 style="margin-top:14px">The Bibliography</h2><p class="ss">the science fiction, by series</p></section>
   __SECTIONS__
 
   <div class="note">Science fiction only. Asimov wrote some 500 books — this excludes his ~400 works of non-fiction (science, history, the Bible, Shakespeare) and his non-SF mysteries (the Black Widowers, the Union Club). The Robot, Empire, and Foundation series were merged by Asimov into one continuous future history, from the first positronic robot to the Second Foundation.</div>
@@ -211,7 +288,9 @@ footer a{color:var(--gold);text-decoration:none}
 if __name__ == "__main__":
     tok = write_dlw()
     page = (TEMPLATE.replace("__CARBON__", badge_uri("carbon")).replace("__SILICON__", badge_uri("silicon"))
-            .replace("__MONIKER__", html.escape(tok["moniker"])).replace("__SECTIONS__", sections_html()))
+            .replace("__MONIKER__", html.escape(tok["moniker"]))
+            .replace("__PILLARS__", pillars_html()).replace("__READING__", reading_html())
+            .replace("__PERSONAS__", personas_html()).replace("__SECTIONS__", sections_html()))
     open(os.path.join(HERE, "index.html"), "w", encoding="utf-8").write(page)
     nbooks = sum(len(i) for _t,_s,i in SECTIONS)
     print(f"wrote ASIMOV bibliography — {len(SECTIONS)} sections · {nbooks} entries · DLW badge {tok['moniker']}")
