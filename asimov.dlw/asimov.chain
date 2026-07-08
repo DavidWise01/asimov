@@ -1,0 +1,9 @@
+ROOT0-DLW-CHAIN-v1
+index : 592
+slug  : asimov
+seal  : 22516d4dc7eaaf13ec6527ad008139483a2f7c2184d59226a5f0e9294a2e1623
+prev  : ee720cc014e66167d2522454ce1ffb6ed422acfcd486a61b60bb7e64a628c898
+link  : e276eca37a78993b88d7bb428550a6ea583ab90d7fd6a95701c190b038961248
+head  : 3447d3a0533aaf1e29a8bdc67a9774884fb3ae9dbc8a17064b7a008ca3c4ec90
+
+— the tether: link = sha256(index|slug|seal|prev). the chain head commits to the whole corpus.
